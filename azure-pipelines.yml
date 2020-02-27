@@ -41,7 +41,13 @@ stages:
         command: 'restore'
         projects: '**/*.csproj'
 
-    - script: 'dotnet build configuration --configuration $(buildConfiguration)'
+   # - script: 'dotnet build configuration --configuration $(buildConfiguration)'
+       - task: DotNetCoreCLI@2
+      displayName: 'Build Project -- $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish the project - $(buildConfiguration)'
