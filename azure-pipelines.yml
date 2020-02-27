@@ -32,7 +32,7 @@ stages:
 
     - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
       displayName: 'Write build info'
-      workingDirectory: $(wwwrootDir)
+      workingDirectory: $(System.workingDirectory)
 
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
@@ -59,6 +59,7 @@ stages:
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: drop
 
+ #Below are deployment stages
 - stage: 'Dev'
   displayName: 'Deploy to the dev environment'
   dependsOn: Build
