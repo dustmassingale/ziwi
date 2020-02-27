@@ -42,8 +42,9 @@ stages:
         projects: '**/*.csproj'
 
    # - script: 'dotnet build configuration --configuration $(buildConfiguration)'
-       - task: DotNetCoreCLI@2
-      displayName: 'Build Project -- $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build the project - $(buildConfiguration)'
       inputs:
         command: 'build'
         projects: '**/*.csproj'
