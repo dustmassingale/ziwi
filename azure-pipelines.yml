@@ -90,7 +90,6 @@ stages:
       vmImage: 'ubuntu-16.04'
     environment: test
     variables:
-    - group: 'Release'
     strategy:
       runOnce:
         deploy:
@@ -107,7 +106,6 @@ stages:
       vmImage: 'ubuntu-16.04'
     environment: staging
     variables:
-    - group: 'Release'
     strategy:
       runOnce:
         deploy:
