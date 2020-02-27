@@ -89,7 +89,6 @@ stages:
     pool:
       vmImage: 'ubuntu-16.04'
     environment: test
-    variables:
     strategy:
       runOnce:
         deploy:
@@ -105,7 +104,6 @@ stages:
     pool:
       vmImage: 'ubuntu-16.04'
     environment: staging
-    variables:
     strategy:
       runOnce:
         deploy:
