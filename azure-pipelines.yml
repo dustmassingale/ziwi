@@ -27,13 +27,14 @@ stages:
       displayName: 'Run npm install'
       inputs:
         verbose: false
-
+    - script: 'whoami'
+      displayName: 'Debug info WhoAmI'
 
     - script: 'git tag $(Build.BuildNumber)'
-      displayName: 'Add Git Tag for Build Number'
+      displayName: 'Add Git Tag for Build $(Build.BuildNumber)'
 
-    - script: 'git push origin HEAD:$(buildDetails.sourceBranch)'
-      displayName: 'Push Git Tag'
+    - script: 'git push origin HEAD:$(BuildDetails.SourceBranch)'
+      displayName: 'Push Git Tag to $(BuildDetails.SourceBranch)'
 
     - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
