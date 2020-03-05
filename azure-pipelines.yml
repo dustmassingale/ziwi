@@ -29,10 +29,7 @@ stages:
         verbose: false
 
 
-    - script: |
-        'echo 
-        "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)"
-         > buildinfo.txt'
+    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : ${Build.BuildNumber}   <br> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
@@ -62,6 +59,28 @@ stages:
     #     delimiter: ':'
     #     fieldEquality: '='
     #     anyFieldContent: '*'
+    - task: XplatGenerateReleaseNotes@2
+      inputs:
+        outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.md'
+        templateLocation: 'InLine'
+        inlinetemplate: |
+          # Release notes 
+          **Build Number**  : ${buildDetails.buildNumber} 
+          **Build started** : ${buildDetails.startTime}  
+          **Source Branch** : ${buildDetails.sourceBranch}  
+
+          ### Associated work items  
+          @@WILOOP@@  
+          * ** ${widetail.fields['System.WorkItemType']} ${widetail.id} ** Assigned by: ${widetail.fields['System.AssignedTo']}  ${widetail.fields['System.Title']}  
+          @@WILOOP@@  
+
+          ### Associated commits
+          @@CSLOOP@@  
+          * ** ID ${csdetail.id} ** Commited by:  ${csdetail.author.displayName} (${csdetail.author.uniqueName}) ${csdetail.message}
+          @@CSLOOP@@
+        delimiter: ':'
+        fieldEquality: '='
+        anyFieldContent: '*'
           
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
