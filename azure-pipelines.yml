@@ -31,34 +31,34 @@ stages:
 
     - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
       displayName: 'Write build info'
-      workingDirectory: $(System.DefaultWorkingDirectory)
+      workingDirectory: $(Build.ArtifactStagingDirectory)
 
-    - task: XplatGenerateReleaseNotes@2
-      inputs:
-        outputfile: '$(Build.ArtifactStagingDirectory)\release-notes.htm'
-        templateLocation: 'InLine'
-        inlinetemplate: |
-          <h1>Release notes for build  ${Build.DefinitionName}</h1>
-                    <b>Build Number</b>  : ${Build.BuildNumber}   <br>
-                    <b>Build started</b> : ${releaseDetails.modifiedOn}   <br>
-                    <b>Source Branch</b> : ${releaseDetails.sourceBranch}  <br>
-                    **Compared Release Number**  : ${compareReleaseDetails.name} <br>
-                    <h3>Associated work items</h3>
-                    @@WILOOP@@
-                    <li>
-                        <b>${$widetail.fields.'System.WorkItemType'} ${$widetail.id}</b> [Assigned by: ${$widetail.fields.'System.AssignedTo'}]     ${$widetail.fields.'System.Title'}
-                    </li>
-                    @@WILOOP@@
-                    <h3>Associated change sets/commits</h3>
-                    @@CSLOOP@@
-                    <li>
-                        <b>ID ${$csdetail.changesetid}${$csdetail.commitid}</b> ${$csdetail.comment}
-                    </li>
-                    <hr>
-                    @@CSLOOP@@
-        delimiter: ':'
-        fieldEquality: '='
-        anyFieldContent: '*'
+    # - task: XplatGenerateReleaseNotes@2
+    #   inputs:
+    #     outputfile: '$(Build.ArtifactStagingDirectory)\release-notes.htm'
+    #     templateLocation: 'InLine'
+    #     inlinetemplate: |
+    #       <h1>Release notes for build  ${Build.DefinitionName}</h1>
+    #                 <b>Build Number</b>  : ${Build.BuildNumber}   <br>
+    #                 <b>Build started</b> : ${releaseDetails.modifiedOn}   <br>
+    #                 <b>Source Branch</b> : ${releaseDetails.sourceBranch}  <br>
+    #                 **Compared Release Number**  : ${compareReleaseDetails.name} <br>
+    #                 <h3>Associated work items</h3>
+    #                 @@WILOOP@@
+    #                 <li>
+    #                     <b>${$widetail.fields.'System.WorkItemType'} ${$widetail.id}</b> [Assigned by: ${$widetail.fields.'System.AssignedTo'}]     ${$widetail.fields.'System.Title'}
+    #                 </li>
+    #                 @@WILOOP@@
+    #                 <h3>Associated change sets/commits</h3>
+    #                 @@CSLOOP@@
+    #                 <li>
+    #                     <b>ID ${$csdetail.changesetid}${$csdetail.commitid}</b> ${$csdetail.comment}
+    #                 </li>
+    #                 <hr>
+    #                 @@CSLOOP@@
+    #     delimiter: ':'
+    #     fieldEquality: '='
+    #     anyFieldContent: '*'
           
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
