@@ -40,7 +40,7 @@ stages:
         inlinetemplate: |
           <h1>Release notes for build $defname</h1>
                     <b>Build Number</b>  : $($build.buildnumber)    <br>
-                    <b>Build started</b> : $("{0:dd/MM/yy HH:mm:ss}" -f [datetime]$build.startTime)     <br>
+                    <b>Build started</b> : $([datetime]$build.startTime)     <br>
                     <b>Source Branch</b> : $($build.sourceBranch)  <br>
                     <h3>Associated work items</h3>
                     @@WILOOP@@
