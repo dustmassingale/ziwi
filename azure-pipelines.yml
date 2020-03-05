@@ -38,8 +38,8 @@ stages:
         outputfile: '$(Build.ArtifactStagingDirectory)\release-notes.htm'
         templateLocation: 'InLine'
         inlinetemplate: |
-          <h1>Release notes for build  ${releaseDetails.releaseDefinition.name}</h1>
-                    <b>Build Number</b>  : ${releaseDetails.name}   <br>
+          <h1>Release notes for build  ${Build.DefinitionName}</h1>
+                    <b>Build Number</b>  : ${Build.BuildNumber}   <br>
                     <b>Build started</b> : ${releaseDetails.modifiedOn}   <br>
                     <b>Source Branch</b> : ${releaseDetails.sourceBranch}  <br>
                     **Compared Release Number**  : ${compareReleaseDetails.name} <br>
