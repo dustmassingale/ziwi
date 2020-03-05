@@ -29,36 +29,10 @@ stages:
         verbose: false
 
 
-    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : ${Build.BuildNumber}   <br> $(Build.BuildId) "> buildinfo.html'
+    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
-    # - task: XplatGenerateReleaseNotes@2
-    #   inputs:
-    #     outputfile: '$(Build.ArtifactStagingDirectory)\release-notes.htm'
-    #     templateLocation: 'InLine'
-    #     inlinetemplate: |
-    #       <h1>Release notes for build  ${Build.DefinitionName}</h1>
-    #                 <b>Build Number</b>  : ${Build.BuildNumber}   <br>
-    #                 <b>Build started</b> : ${releaseDetails.modifiedOn}   <br>
-    #                 <b>Source Branch</b> : ${releaseDetails.sourceBranch}  <br>
-    #                 **Compared Release Number**  : ${compareReleaseDetails.name} <br>
-    #                 <h3>Associated work items</h3>
-    #                 @@WILOOP@@
-    #                 <li>
-    #                     <b>${$widetail.fields.'System.WorkItemType'} ${$widetail.id}</b> [Assigned by: ${$widetail.fields.'System.AssignedTo'}]     ${$widetail.fields.'System.Title'}
-    #                 </li>
-    #                 @@WILOOP@@
-    #                 <h3>Associated change sets/commits</h3>
-    #                 @@CSLOOP@@
-    #                 <li>
-    #                     <b>ID ${$csdetail.changesetid}${$csdetail.commitid}</b> ${$csdetail.comment}
-    #                 </li>
-    #                 <hr>
-    #                 @@CSLOOP@@
-    #     delimiter: ':'
-    #     fieldEquality: '='
-    #     anyFieldContent: '*'
     - task: XplatGenerateReleaseNotes@2
       inputs:
         outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.md'
@@ -124,8 +98,13 @@ stages:
       runOnce:
         deploy:
           steps:
+          - script: whoami
           - download: current
             artifact: drop
+          - task: git-branch-on-release-task@9
+            inputs:
+              branchFolder: 'DEV'
+              staticTagName: 'DEV-$(Build.BuildNumber)'
 
 
 
@@ -145,8 +124,8 @@ stages:
             artifact: drop
           - task: git-branch-on-release-task@9
             inputs:
-              branchFolder: 'dev'
-              staticTagName: 'DEV'
+              branchFolder: 'TEST'
+              staticTagName: 'TEST-$(Build.BuildNumber)'
 
 
 - stage: 'Staging'
@@ -163,3 +142,7 @@ stages:
           steps:
           - download: current
             artifact: drop
+          - task: git-branch-on-release-task@9
+            inputs:
+              branchFolder: 'STAGING'
+              staticTagName: 'STAGING-$(Build.BuildNumber)'
