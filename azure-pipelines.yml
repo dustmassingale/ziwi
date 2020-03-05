@@ -18,10 +18,10 @@ stages:
       dotnetSdkVersion: '2.2.x'
 
     steps:
-    - task: UseDotNet@2
-      displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
-      inputs:
-        version: '$(dotnetSdkVersion)'
+#    - task: UseDotNet@2
+#      displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
+#      inputs:
+#        version: '$(dotnetSdkVersion)'
 
     - task: Npm@1
       displayName: 'Run npm install'
