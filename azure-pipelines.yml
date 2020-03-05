@@ -143,6 +143,11 @@ stages:
           steps:
           - download: current
             artifact: drop
+          - task: git-branch-on-release-task@9
+            inputs:
+              branchFolder: 'dev'
+              staticTagName: 'DEV'
+
 
 - stage: 'Staging'
   displayName: 'Deploy to the staging environment'
