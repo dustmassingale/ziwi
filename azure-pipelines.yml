@@ -32,7 +32,7 @@ stages:
     - script: 'git tag $(Build.BuildNumber)'
       displayName: 'Add Git Tag for Build Number'
 
-    - script: 'git push'
+    - script: 'git push origin HEAD:$(buildDetails.sourceBranch)'
       displayName: 'Push Git Tag'
 
     - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
