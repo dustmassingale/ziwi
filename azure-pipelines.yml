@@ -30,7 +30,10 @@ stages:
 
 
     - script: 'git tag $(Build.BuildNumber)'
-      displayName: 'Git Tag Build'
+      displayName: 'Add Git Tag for Build Number'
+
+    - script: 'git push'
+      displayName: 'Push Git Tag'
 
     - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
