@@ -29,9 +29,14 @@ stages:
         verbose: false
 
 
+    - script: 'git tag $(Build.BuildNumber)'
+      displayName: 'Git Tag Build'
+
     - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
+
+
 
     - task: XplatGenerateReleaseNotes@2
       inputs:
