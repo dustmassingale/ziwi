@@ -38,10 +38,11 @@ stages:
         outputfile: '$(Build.ArtifactStagingDirectory)\release-notes.htm'
         templateLocation: 'InLine'
         inlinetemplate: |
-          <h1>Release notes for build $defname</h1>
-                    <b>Build Number</b>  : ${build.buildnumber}    <br>
-                    <b>Build started</b> : ${"{0:dd/MM/yy HH:mm:ss}" -f [datetime]${build.startTime}     <br>
-                    <b>Source Branch</b> : ${build.sourceBranch}  <br>
+          <h1>Release notes for build  ${releaseDetails.releaseDefinition.name}</h1>
+                    <b>Build Number</b>  : ${releaseDetails.name}   <br>
+                    <b>Build started</b> : ${releaseDetails.modifiedOn}   <br>
+                    <b>Source Branch</b> : ${releaseDetails.sourceBranch}  <br>
+                    **Compared Release Number**  : ${compareReleaseDetails.name} <br>
                     <h3>Associated work items</h3>
                     @@WILOOP@@
                     <li>
