@@ -28,7 +28,12 @@ stages:
       inputs:
         verbose: false
 
+    - script: 'echo $(GitSecure.git-username)'
+      displayName: 'Denote Security User'
 
+    - script: 'git username $(GitSecure.git-username)'
+      displayName: 'Set git username'
+      
     - script: 'git tag $(Build.BuildNumber)'
       displayName: 'Add Git Tag for Build Number'
 
