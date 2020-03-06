@@ -50,8 +50,8 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          git tag $(GitVersion.NuGetVersion)
-          Write-Host "Successfully created tag $(GitVersion.NuGetVersion)" 
+          git tag $(Build.BuildNumber)
+          Write-Host "Successfully created tag $(Build.BuildNumber)" 
 
     # push created tag to origin
     # NOTE: you need to set 'persistCredentials: true' in the checkout task. Otherwise git will fail with error code 1.
@@ -64,7 +64,7 @@ stages:
         targetType: 'inline'
         script: |
           git push --tags
-          Write-Host "Successfully pushed tag $(GitVersion.NuGetVersion) to origin" 
+          Write-Host "Successfully pushed tag $(Build.BuildNumber) to origin" 
 
     - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
