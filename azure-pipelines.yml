@@ -36,11 +36,11 @@ stages:
     - script: 'echo $(git-username)'
       displayName: 'Denote Future Security User'
 
-#    - script: 'git config user $(git-username)'
-#      displayName: 'Set new git username'
+    - script: 'git config user.name $(git-username)'
+      displayName: 'Set new git username'
 
-#    - script: 'git config password $(git-pass)'
-#      displayName: 'Set new git password'
+    - script: 'git config user.password $(git-pass)'
+      displayName: 'Set new git password'
       
     - script: 'git tag $(Build.BuildNumber)'
       displayName: 'Add Git Tag for Build Number'
