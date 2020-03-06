@@ -2,7 +2,7 @@ trigger:
 - '*'
 
 variables:
- - group: GitSecure
+ - group: git-secure
  - name: buildConfiguration
    value: 'Release'
 
