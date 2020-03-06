@@ -30,7 +30,7 @@ stages:
       inputs:
         verbose: false
 
-    - script: 'git user'
+    - script: 'git config user'
       displayName: 'Denote Security User'
 
     - script: 'echo $(git-username)'
