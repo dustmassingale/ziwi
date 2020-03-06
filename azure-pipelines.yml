@@ -2,7 +2,9 @@ trigger:
 - '*'
 
 variables:
-  buildConfiguration: 'Release'
+ - group: GitSecure
+ - name: buildConfiguration
+   value: 'Release'
 
 stages:
 - stage: 'Build'
