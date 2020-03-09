@@ -45,13 +45,6 @@ stages:
     - script: 'git tag $(Build.BuildNumber)'
       displayName: 'Add Git Tag for Build Number'
 
-    # tag the current branch with the version number
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: |
-          git tag $(Build.BuildNumber)
-          Write-Host "Successfully created tag $(Build.BuildNumber)" 
 
     # push created tag to origin
     # NOTE: you need to set 'persistCredentials: true' in the checkout task. Otherwise git will fail with error code 1.
