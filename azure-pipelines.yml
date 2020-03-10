@@ -148,6 +148,34 @@ stages:
             inputs:
               #staticTagName: 'DEV-$(Build.BuildNumber)'
               staticTagName: 'DEV'
+          
+
+- stage: 'pr-develop'
+  displayName: 'PR Develop Branch'
+  dependsOn: Dev
+  condition: |
+    and
+    (
+      succeeded(),
+      ne(variables['Build.SourceBranchName'], 'develop')
+    )
+  jobs:
+  - deployment: Deploy
+    pool:
+      vmImage: 'ubuntu-16.04'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+          - task: GitCreatePullRequest@0
+            inputs:
+              repositorySelectionMethod: 'currentBuild'
+              sourceBranch: '${buildDetails.sourceBranch}'
+              targetBranch: 'develop'
+              bypassPolicy: true
+              squashMerge: true
 
 - stage: 'Test'
   displayName: 'Deploy test environment'
