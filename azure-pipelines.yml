@@ -95,7 +95,7 @@ stages:
 
           <h3>Associated commits</h3>
           @@CSLOOP@@  
-          <br/>* ID ${csdetail.id} ** Commited by:  ${csdetail.author.displayName} (${csdetail.author.uniqueName}) ${csdetail.message}
+          <h4>Commit by:  ${csdetail.author.displayName} </h4><i>${csdetail.author.uniqueName}</i> <p> ${csdetail.message} </p><hr/>
           @@CSLOOP@@
         delimiter: ':'
         fieldEquality: '='
