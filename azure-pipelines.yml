@@ -24,7 +24,7 @@ stages:
 #      displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
 #      inputs:
 #        version: '$(dotnetSdkVersion)'
-    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
+    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
@@ -76,6 +76,30 @@ stages:
         delimiter: ':'
         fieldEquality: '='
         anyFieldContent: '*'
+
+        
+    - task: XplatGenerateReleaseNotes@2
+      inputs:
+        outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.html'
+        templateLocation: 'InLine'
+        inlinetemplate: |
+          <h1> Release notes </h1>
+          <br/>**Build Number**  : ${buildDetails.buildNumber} 
+          <br/>**Build started** : ${buildDetails.startTime}  
+          <br/>**Source Branch** : ${buildDetails.sourceBranch}  
+
+          <h3>Associated work items</h3>
+          @@WILOOP@@  
+          <br/>* ${widetail.fields['System.WorkItemType']} ${widetail.id} ** Assigned by: ${widetail.fields['System.AssignedTo']}  ${widetail.fields['System.Title']}  
+          @@WILOOP@@  
+
+          <h3>Associated commits</h3>
+          @@CSLOOP@@  
+          <br/>* ID ${csdetail.id} ** Commited by:  ${csdetail.author.displayName} (${csdetail.author.uniqueName}) ${csdetail.message}
+          @@CSLOOP@@
+        delimiter: ':'
+        fieldEquality: '='
+        anyFieldContent: '*'
           
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
@@ -108,7 +132,7 @@ stages:
 
  #Below are deployment stages
 - stage: 'Dev'
-  displayName: 'Deploy to the dev environment'
+  displayName: 'Deploy dev environment'
   dependsOn: Build
   jobs:
   - deployment: Deploy
@@ -122,14 +146,14 @@ stages:
           - script: whoami
           - download: current
             artifact: drop
-          - task: git-branch-on-release-task@9
+          - task: git-tag-on-release-task@9
             inputs:
               staticTagName: 'DEV-$(Build.BuildNumber)'
 
 
 
 - stage: 'Test'
-  displayName: 'Deploy to the test environment'
+  displayName: 'Deploy test environment'
   dependsOn: Dev
   jobs:
   - deployment: Deploy
@@ -142,19 +166,20 @@ stages:
           steps:
           - download: current
             artifact: drop
-          - task: git-branch-on-release-task@9
+          - task: git-tag-on-release-task@9
             inputs:
-              staticTagName: 'TEST-$(Build.BuildNumber)'
+              staticTagName: 'OPS-$(Build.BuildNumber)'
 
 
-- stage: 'Staging'
-  displayName: 'Deploy to the staging environment'
+
+- stage: 'OPS'
+  displayName: 'Deploy staging environment'
   dependsOn: Test
   jobs:
   - deployment: Deploy
     pool:
       vmImage: 'ubuntu-16.04'
-    environment: staging
+    environment: OPS
     strategy:
       runOnce:
         deploy:
@@ -163,4 +188,7 @@ stages:
             artifact: drop
           - task: git-branch-on-release-task@9
             inputs:
-              staticTagName: 'STAGE-$(Build.BuildNumber)'
+              staticTagName: 'OPS'
+          - task: git-tag-on-release-task@9
+            inputs:
+              staticTagName: 'develop'
