@@ -58,7 +58,7 @@ stages:
         outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.html'
         templateLocation: 'InLine'
         inlinetemplate: |
-          <font color="navy"> 
+          <font color='navy'> 
           <h1> Build Notes ${buildDetails.buildNumber} </h1>
           <br/><b>Build Number</b> : ${buildDetails.buildNumber} 
           <br/><b>Build Started</b>: ${buildDetails.startTime}  
