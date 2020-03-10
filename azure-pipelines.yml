@@ -149,8 +149,7 @@ stages:
               #staticTagName: 'DEV-$(Build.BuildNumber)'
               staticTagName: 'DEV'
           - task: git-branch-on-release-task@9
-            inputs:
-              staticTagName: 'develop'
+
 
 
 
@@ -176,7 +175,7 @@ stages:
             artifact: drop
           - task: git-tag-on-release-task@9
             inputs:
-              staticTagName: 'TEST-$(Build.BuildNumber)'
+              staticTagName: 'TEST'
 
 
 
@@ -201,4 +200,4 @@ stages:
               staticTagName: 'OPS'
           - task: git-tag-on-release-task@9
             inputs:
-              staticTagName: 'develop'
+              staticTagName: 'release'
