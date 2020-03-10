@@ -94,7 +94,9 @@ stages:
         command: 'build'
         projects: '**/*.csproj'
         arguments: '--configuration $(buildConfiguration)'
-
+    - task: WhiteSource Bolt@20
+      inputs:
+        cwd: '$(System.WorkingDirectory)'
     - task: DotNetCoreCLI@2
       displayName: 'Publish the project - $(buildConfiguration)'
       inputs:
