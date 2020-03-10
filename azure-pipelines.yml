@@ -45,11 +45,14 @@ stages:
 #    - script: 'git config user.password $(git-pass)'
 #      displayName: 'Set new git password'
       
-    - script: 'git tag $(Build.BuildNumber)'
-      displayName: 'Add Git Tag for Build Number'
+#    - script: 'git tag $(Build.BuildNumber)'
+#      displayName: 'Add Git Tag for Build Number'
 
-    - script: 'git push --tags'
-      displayName: 'Push tags'
+#    - script: 'git push --tags'
+#      displayName: 'Push tags'
+    - task: git-tag-on-release-task@9
+      inputs:
+        staticTagName: '$(Build.BuildNumber)'
 
     - task: XplatGenerateReleaseNotes@2
       inputs:
