@@ -34,20 +34,22 @@ stages:
         verbose: false
 
     - script: 'git config --list'
-      displayName: 'Denote Security User'
+      displayName: 'List known users'
 
-    - script: 'echo $(git-username)'
-      displayName: 'Denote Future Security User'
+    - script: 'git remote -v'
+      displayName: 'List known remotes'
 
-    - script: 'git config user.name $(git-username)'
-      displayName: 'Set new git username'
+#    - script: 'git config user.name $(git-username)'
+#      displayName: 'Set new git username'
 
-    - script: 'git config user.password $(git-pass)'
-      displayName: 'Set new git password'
+#    - script: 'git config user.password $(git-pass)'
+#      displayName: 'Set new git password'
       
     - script: 'git tag $(Build.BuildNumber)'
       displayName: 'Add Git Tag for Build Number'
-    - script: 'git push git@ssh.dev.azure.com:v3/StrategicDevelopmentTeam/Product%20Improvement/ziwi.git --tags'
+
+    - script: 'git push --tags'
+      displayName: 'Push tags'
 
     - task: XplatGenerateReleaseNotes@2
       inputs:
