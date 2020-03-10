@@ -25,16 +25,8 @@ stages:
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
-    - task: Npm@1
-      displayName: 'Run npm install'
-      inputs:
-        verbose: false
-
-    - task: git-tag-on-release-task@9
-      inputs:
-        staticTagName: 'Bld$(Build.BuildNumber)'
-
     - task: XplatGenerateReleaseNotes@2
+      displayName: 'Generate Build Notes MarkDown with XPLAT Plugin'
       inputs:
         outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.md'
         templateLocation: 'InLine'
@@ -59,6 +51,7 @@ stages:
 
         
     - task: XplatGenerateReleaseNotes@2
+      displayName: 'Generate Build Notes HTML with XPLAT Plugin'
       inputs:
         outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.html'
         templateLocation: 'InLine'
@@ -82,7 +75,7 @@ stages:
         anyFieldContent: '*'
           
     - task: DotNetCoreCLI@2
-      displayName: 'Restore project dependencies'
+      displayName: 'Restore .net project dependencies'
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
@@ -97,6 +90,11 @@ stages:
     - task: WhiteSource Bolt@20
       inputs:
         cwd: '$(System.WorkingDirectory)'
+
+    - task: git-tag-on-release-task@9
+      displayName: 'Tag Git Branch with Plugin'
+      inputs:
+        staticTagName: 'Bld$(Build.BuildNumber)'
     - task: DotNetCoreCLI@2
       displayName: 'Publish the project - $(buildConfiguration)'
       inputs:
