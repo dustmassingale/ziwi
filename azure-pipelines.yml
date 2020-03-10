@@ -79,8 +79,17 @@ stages:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
-    - script: dotnet test
+
+    - script: 'dotnet test'
       displayName: 'Run Tests'
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          **\*test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
     - task: DotNetCoreCLI@2
       displayName: 'Build the project - $(buildConfiguration)'
       inputs:
@@ -95,6 +104,10 @@ stages:
       displayName: 'Tag Git Branch with Plugin'
       inputs:
         staticTagName: 'Bld$(Build.BuildNumber)'
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml'
     - task: DotNetCoreCLI@2
       displayName: 'Publish the project - $(buildConfiguration)'
       inputs:
