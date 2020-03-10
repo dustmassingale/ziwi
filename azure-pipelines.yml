@@ -80,8 +80,7 @@ stages:
         command: 'restore'
         projects: '**/*.csproj'
 
-    - script: 'dotnet test'
-      displayName: 'Run Tests'
+
     - task: VSTest@2
       inputs:
         testSelector: 'testAssemblies'
