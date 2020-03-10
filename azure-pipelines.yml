@@ -21,7 +21,7 @@ stages:
 
     steps:
 
-    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> $(Build.BuildId) "> buildinfo.html'
+    - script: 'echo <h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> BuildId: $(Build.BuildId) > buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
@@ -165,12 +165,12 @@ stages:
             artifact: drop
           - task: git-tag-on-release-task@9
             inputs:
-              staticTagName: 'OPS-$(Build.BuildNumber)'
+              staticTagName: 'TEST-$(Build.BuildNumber)'
 
 
 
 - stage: 'OPS'
-  displayName: 'Deploy staging environment'
+  displayName: 'Deploy OPS environment'
   dependsOn: Test
   jobs:
   - deployment: Deploy
@@ -183,6 +183,8 @@ stages:
           steps:
           - download: current
             artifact: drop
+          - script: git config user.name
+          - script: whoami
           - task: git-branch-on-release-task@9
             inputs:
               staticTagName: 'OPS'
