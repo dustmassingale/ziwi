@@ -20,10 +20,7 @@ stages:
       dotnetSdkVersion: '2.2.x'
 
     steps:
-#    - task: UseDotNet@2
-#      displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
-#      inputs:
-#        version: '$(dotnetSdkVersion)'
+
     - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
@@ -33,23 +30,6 @@ stages:
       inputs:
         verbose: false
 
-    - script: 'git config --list'
-      displayName: 'List known users'
-
-    - script: 'git remote -v'
-      displayName: 'List known remotes'
-
-#    - script: 'git config user.name $(git-username)'
-#      displayName: 'Set new git username'
-
-#    - script: 'git config user.password $(git-pass)'
-#      displayName: 'Set new git password'
-      
-#    - script: 'git tag $(Build.BuildNumber)'
-#      displayName: 'Add Git Tag for Build Number'
-
-#    - script: 'git push --tags'
-#      displayName: 'Push tags'
     - task: git-tag-on-release-task@9
       inputs:
         staticTagName: 'Bld$(Build.BuildNumber)'
@@ -106,7 +86,8 @@ stages:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
-
+    - script: dotnet test
+      displayName: 'Run Tests'
     - task: DotNetCoreCLI@2
       displayName: 'Build the project - $(buildConfiguration)'
       inputs:
