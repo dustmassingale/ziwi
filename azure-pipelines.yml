@@ -24,6 +24,9 @@ stages:
 #      displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
 #      inputs:
 #        version: '$(dotnetSdkVersion)'
+    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
+      displayName: 'Write build info'
+      workingDirectory: $(Build.ArtifactStagingDirectory)
 
     - task: Npm@1
       displayName: 'Run npm install'
@@ -53,17 +56,12 @@ stages:
     #       In our case, the build agent needs the additional permissions for "bypass policies when pushing" and "bypass policies when completing pull requests"
     #       because we have a custom policy in place. (See: https://opti-q.visualstudio.com/<your_project_name>/_settings/repositories)
     - task: PowerShell@2
+      displayName: 'Git push tags'
       inputs:
         targetType: 'inline'
         script: |
           git push --tags
           Write-Host "Successfully pushed tag $(Build.BuildNumber) to origin" 
-
-    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
-      displayName: 'Write build info'
-      workingDirectory: $(Build.ArtifactStagingDirectory)
-
-
 
     - task: XplatGenerateReleaseNotes@2
       inputs:
