@@ -21,7 +21,7 @@ stages:
 
     steps:
 
-    - script: 'echo <h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> BuildId: $(Build.BuildId) > buildinfo.html'
+    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> BuildId: $(Build.BuildId)" > buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
