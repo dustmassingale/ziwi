@@ -1,10 +1,15 @@
 trigger:
-- '*'
+- 'feature/*'
+- 'develop'
+- 'release/*'
+- 'hotfix/*'
 
 variables:
  - group: git-secure
  - name: buildConfiguration
    value: 'Release'
+ - name: releaseBranchName
+   value: develop
 
 stages:
 - stage: 'Build'
@@ -152,6 +157,12 @@ stages:
 - stage: 'Test'
   displayName: 'Deploy test environment'
   dependsOn: Dev
+  condition: |
+    and
+    (
+      succeeded(),
+      eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
+    )
   jobs:
   - deployment: Deploy
     pool:
@@ -169,8 +180,8 @@ stages:
 
 
 
-- stage: 'OPS'
-  displayName: 'Deploy OPS environment'
+- stage: 'Ops'
+  displayName: 'Deploy Ops environment'
   dependsOn: Test
   jobs:
   - deployment: Deploy
