@@ -148,6 +148,9 @@ stages:
             inputs:
               #staticTagName: 'DEV-$(Build.BuildNumber)'
               staticTagName: 'DEV'
+          - task: git-branch-on-release-task@9
+            inputs:
+              staticTagName: 'develop'
 
 
 
