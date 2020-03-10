@@ -47,21 +47,7 @@ stages:
       
     - script: 'git tag $(Build.BuildNumber)'
       displayName: 'Add Git Tag for Build Number'
-
-
-    # push created tag to origin
-    # NOTE: you need to set 'persistCredentials: true' in the checkout task. Otherwise git will fail with error code 1.
-    # NOTE: You cannot run both "git tag xyz" AND "git push --task" in the same powershell command. If you do, git will fail with error code 1
-    # NOTE: IF you get an error from this git command, make sure, that your build user has the required permissions!
-    #       In our case, the build agent needs the additional permissions for "bypass policies when pushing" and "bypass policies when completing pull requests"
-    #       because we have a custom policy in place. (See: https://opti-q.visualstudio.com/<your_project_name>/_settings/repositories)
-    - task: PowerShell@2
-      displayName: 'Git push tags'
-      inputs:
-        targetType: 'inline'
-        script: |
-          git push --tags
-          Write-Host "Successfully pushed tag $(Build.BuildNumber) to origin" 
+    - script: 'git push git@ssh.dev.azure.com:v3/StrategicDevelopmentTeam/Product%20Improvement/ziwi.git --tags'
 
     - task: XplatGenerateReleaseNotes@2
       inputs:
