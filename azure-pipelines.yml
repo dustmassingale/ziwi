@@ -83,19 +83,19 @@ stages:
         outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.html'
         templateLocation: 'InLine'
         inlinetemplate: |
-          <h1> Release notes </h1>
-          <br/>**Build Number**  : ${buildDetails.buildNumber} 
-          <br/>**Build started** : ${buildDetails.startTime}  
-          <br/>**Source Branch** : ${buildDetails.sourceBranch}  
+          <h1> Build Notes ${buildDetails.buildNumber} $</h1>
+          <br/><font color="navy"><b>Build Number</b> : ${buildDetails.buildNumber} </font>
+          <br/><b>Build Started</b>: ${buildDetails.startTime}  
+          <br/><b>Source Branch</b> : ${buildDetails.sourceBranch}  
 
-          <h3>Associated work items</h3>
+          <h3><font color="orange">Associated work items</font></h3>
           @@WILOOP@@  
           <br/>* ${widetail.fields['System.WorkItemType']} ${widetail.id} ** Assigned by: ${widetail.fields['System.AssignedTo']}  ${widetail.fields['System.Title']}  
           @@WILOOP@@  
 
-          <h3>Associated commits</h3>
+          <h3><font color="orange">Associated commits</font></h3>
           @@CSLOOP@@  
-          <h4>Commit by:  ${csdetail.author.displayName} <i>${csdetail.author.uniqueName}</i> </h4> <p> ${csdetail.message} </p> ID ${csdetail.id}<hr/>
+          <b>Commit by:  ${csdetail.author.displayName} <i>${csdetail.author.uniqueName}</i> </b><font color="navy">ID ${csdetail.id}</font>  <p> ${csdetail.message} </p> <hr/>
           @@CSLOOP@@
         delimiter: ':'
         fieldEquality: '='
