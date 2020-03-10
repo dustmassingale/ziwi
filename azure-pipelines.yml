@@ -52,7 +52,7 @@ stages:
 #      displayName: 'Push tags'
     - task: git-tag-on-release-task@9
       inputs:
-        staticTagName: '$(Build.BuildNumber)'
+        staticTagName: 'Bld$(Build.BuildNumber)'
 
     - task: XplatGenerateReleaseNotes@2
       inputs:
@@ -124,7 +124,6 @@ stages:
             artifact: drop
           - task: git-branch-on-release-task@9
             inputs:
-              branchFolder: 'DEV'
               staticTagName: 'DEV-$(Build.BuildNumber)'
 
 
@@ -145,7 +144,6 @@ stages:
             artifact: drop
           - task: git-branch-on-release-task@9
             inputs:
-              branchFolder: 'TEST'
               staticTagName: 'TEST-$(Build.BuildNumber)'
 
 
@@ -165,5 +163,4 @@ stages:
             artifact: drop
           - task: git-branch-on-release-task@9
             inputs:
-              branchFolder: 'STAGING'
-              staticTagName: 'STAGING-$(Build.BuildNumber)'
+              staticTagName: 'STAGE-$(Build.BuildNumber)'
