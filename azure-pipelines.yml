@@ -25,9 +25,7 @@ stages:
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
-    - script: 'git log'
-      displayName: 'Write Git Log'
-      workingDirectory: $(Build.ArtifactStagingDirectory)
+
 
     - task: XplatGenerateReleaseNotes@2
       displayName: 'Generate Build Notes MarkDown with XPLAT Plugin'
