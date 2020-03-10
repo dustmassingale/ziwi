@@ -2,7 +2,9 @@ trigger:
 - '*'
 
 variables:
-  buildConfiguration: 'Release'
+ - group: git-secure
+ - name: buildConfiguration
+   value: 'Release'
 
 stages:
 - stage: 'Build'
@@ -18,31 +20,15 @@ stages:
       dotnetSdkVersion: '2.2.x'
 
     steps:
-#    - task: UseDotNet@2
-#      displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
-#      inputs:
-#        version: '$(dotnetSdkVersion)'
 
-    - task: Npm@1
-      displayName: 'Run npm install'
-      inputs:
-        verbose: false
-    - script: 'whoami'
-      displayName: 'Debug info WhoAmI'
-
-    - script: 'git tag $(Build.BuildNumber)'
-      displayName: 'Add Git Tag for Build $(Build.BuildNumber)'
-
-    - script: 'git push origin HEAD:$(BuildDetails.SourceBranch)'
-      displayName: 'Push Git Tag to $(BuildDetails.SourceBranch)'
-
-    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br> $(Build.BuildId) "> buildinfo.html'
+    - script: 'echo "<h1>Release notes for build  $(Build.DefinitionName)</h1>  <b>Build Number</b>  : $(Build.BuildNumber)   <br/> $(Build.BuildId) "> buildinfo.html'
       displayName: 'Write build info'
       workingDirectory: $(Build.ArtifactStagingDirectory)
 
 
 
     - task: XplatGenerateReleaseNotes@2
+      displayName: 'Generate Build Notes MarkDown with XPLAT Plugin'
       inputs:
         outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.md'
         templateLocation: 'InLine'
@@ -64,20 +50,67 @@ stages:
         delimiter: ':'
         fieldEquality: '='
         anyFieldContent: '*'
+
+        
+    - task: XplatGenerateReleaseNotes@2
+      displayName: 'Generate Build Notes HTML with XPLAT Plugin'
+      inputs:
+        outputfile: '$(Build.ArtifactStagingDirectory)\build-notes.html'
+        templateLocation: 'InLine'
+        inlinetemplate: |
+          <font color='navy'> 
+          <h1> Build Notes ${buildDetails.buildNumber} </h1>
+          <br/><b>Build Number</b> : ${buildDetails.buildNumber} 
+          <br/><b>Build Started</b>: ${buildDetails.startTime}  
+          <br/><b>Source Branch</b> : ${buildDetails.sourceBranch} 
+          </font> 
+
+          <h3>Associated work items</h3>
+          @@WILOOP@@  
+          <br/>* ${widetail.fields['System.WorkItemType']} ${widetail.id} ** Assigned by: ${widetail.fields['System.AssignedTo']}  ${widetail.fields['System.Title']}  
+          @@WILOOP@@  
+
+          <h3>Associated commits</h3>
+          @@CSLOOP@@  
+          <b>Commit by:  ${csdetail.author.displayName} <i>${csdetail.author.uniqueName}</i> </b> ID ${csdetail.id} <p> ${csdetail.message} </p> <hr/>
+          @@CSLOOP@@
+        delimiter: ':'
+        fieldEquality: '='
+        anyFieldContent: '*'
           
     - task: DotNetCoreCLI@2
-      displayName: 'Restore project dependencies'
+      displayName: 'Restore .net project dependencies'
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
 
+
+    - task: VSTest@2
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          **\*test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
     - task: DotNetCoreCLI@2
       displayName: 'Build the project - $(buildConfiguration)'
       inputs:
         command: 'build'
         projects: '**/*.csproj'
         arguments: '--configuration $(buildConfiguration)'
+    - task: WhiteSource Bolt@20
+      inputs:
+        cwd: '$(System.WorkingDirectory)'
 
+    - task: git-tag-on-release-task@9
+      displayName: 'Tag Git Branch with Plugin'
+      inputs:
+        staticTagName: 'Bld$(Build.BuildNumber)'
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml'
     - task: DotNetCoreCLI@2
       displayName: 'Publish the project - $(buildConfiguration)'
       inputs:
@@ -96,7 +129,7 @@ stages:
 
  #Below are deployment stages
 - stage: 'Dev'
-  displayName: 'Deploy to the dev environment'
+  displayName: 'Deploy dev environment'
   dependsOn: Build
   jobs:
   - deployment: Deploy
@@ -110,15 +143,14 @@ stages:
           - script: whoami
           - download: current
             artifact: drop
-          - task: git-branch-on-release-task@9
+          - task: git-tag-on-release-task@9
             inputs:
-              branchFolder: 'DEV'
               staticTagName: 'DEV-$(Build.BuildNumber)'
 
 
 
 - stage: 'Test'
-  displayName: 'Deploy to the test environment'
+  displayName: 'Deploy test environment'
   dependsOn: Dev
   jobs:
   - deployment: Deploy
@@ -131,20 +163,20 @@ stages:
           steps:
           - download: current
             artifact: drop
-          - task: git-branch-on-release-task@9
+          - task: git-tag-on-release-task@9
             inputs:
-              branchFolder: 'TEST'
-              staticTagName: 'TEST-$(Build.BuildNumber)'
+              staticTagName: 'OPS-$(Build.BuildNumber)'
 
 
-- stage: 'Staging'
-  displayName: 'Deploy to the staging environment'
+
+- stage: 'OPS'
+  displayName: 'Deploy staging environment'
   dependsOn: Test
   jobs:
   - deployment: Deploy
     pool:
       vmImage: 'ubuntu-16.04'
-    environment: staging
+    environment: OPS
     strategy:
       runOnce:
         deploy:
@@ -153,5 +185,7 @@ stages:
             artifact: drop
           - task: git-branch-on-release-task@9
             inputs:
-              branchFolder: 'STAGING'
-              staticTagName: 'STAGING-$(Build.BuildNumber)'
+              staticTagName: 'OPS'
+          - task: git-tag-on-release-task@9
+            inputs:
+              staticTagName: 'develop'
