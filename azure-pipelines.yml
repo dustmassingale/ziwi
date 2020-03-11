@@ -11,8 +11,8 @@ variables:
  - name: releaseBranchName
    value: develop
 
-stages:
-- stage: 'Build'
+environments:
+- envirnoment: 'Build'
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
@@ -128,8 +128,8 @@ stages:
 
 
 
- #Below are deployment stages
-- stage: 'Dev'
+ #Below are deployment envirnoments
+- envirnoment: 'Dev'
   displayName: 'Deploy dev environment'
   dependsOn: Build
   jobs:
@@ -149,7 +149,7 @@ stages:
               #staticTagName: 'DEV-$(Build.BuildNumber)'
               staticTagName: 'DEV'
 
-- stage: 'Test'
+- envirnoment: 'Test'
   displayName: 'Deploy test environment'
   dependsOn: Dev
   condition: |
@@ -175,7 +175,7 @@ stages:
 
 
 
-- stage: 'Ops'
+- envirnoment: 'Ops'
   displayName: 'Deploy Ops environment'
   dependsOn: Test
   jobs:
