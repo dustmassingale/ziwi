@@ -170,6 +170,8 @@ stages:
           steps:
           - download: current
             artifact: drop
+          - script: git config user.name
+          - script: whoami
           - task: GitCreatePullRequest@0
             inputs:
               repositorySelectionMethod: 'currentBuild'
