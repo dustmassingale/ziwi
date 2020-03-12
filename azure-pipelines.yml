@@ -176,6 +176,7 @@ stages:
           steps:
           - download: current
             artifact: drop
+          - script: whoami
           - task: GitCreatePullRequest@0
             inputs:
               repositorySelectionMethod: 'currentBuild'
