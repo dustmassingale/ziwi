@@ -125,7 +125,13 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
-
+    - task: GitCreatePullRequest@0
+      inputs:
+        repositorySelectionMethod: 'currentBuild'
+        sourceBranch: '${buildDetails.sourceBranch}'
+        targetBranch: 'develop'
+        bypassPolicy: true
+        squashMerge: true
 
 
  #Below are deployment envirnoments
